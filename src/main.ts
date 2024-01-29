@@ -32,9 +32,9 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1', { exclude: ['/'] });
 
   config.update({
-    accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-    secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
-    region: configService.get('AWS_REGION'),
+    accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID'),
+    secretAccessKey: configService.get<string>('AWS_SECRET_ACCESS_KEY'),
+    region: configService.get<string>('AWS_REGION'),
   });
 
   const configSwagger = new DocumentBuilder()

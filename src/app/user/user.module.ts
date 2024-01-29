@@ -7,7 +7,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User, File]), FileModule],
+    imports: [TypeOrmModule.forFeature([User]), FileModule],
     controllers: [UserController],
     providers: [UserService],
     exports: [UserService],

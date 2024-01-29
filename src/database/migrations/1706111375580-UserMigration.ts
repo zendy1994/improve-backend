@@ -21,11 +21,20 @@ export class UserMigration1706111375580 implements MigrationInterface {
                 isUnique: true,
               },
               {
+                name: 'username',
+                type: 'varchar',
+                isUnique: true,
+              },
+              {
                 name: 'password',
                 type: 'varchar',
               },
               {
-                name: 'full_name',
+                name: 'first_name',
+                type: 'varchar',
+              },
+              {
+                name: 'last_name',
                 type: 'varchar',
               },
               {
@@ -37,7 +46,7 @@ export class UserMigration1706111375580 implements MigrationInterface {
                 name: 'gender',
                 type: 'enum',
                 enum: [UserGender.MALE, UserGender.FEMALE, UserGender.OTHER],
-                enumName: 'gender-enum',
+                enumName: 'user-gender-enum',
                 isNullable: true,
               },
               {
@@ -59,19 +68,27 @@ export class UserMigration1706111375580 implements MigrationInterface {
           }),
           true,
         );
-    
+
         await queryRunner.createIndex(
           TableDB.USER,
           new TableIndex({
-            name: 'emailIdx',
+            name: 'email_idx',
             columnNames: ['email'],
+          }),
+        );
+
+        await queryRunner.createIndex(
+          TableDB.USER,
+          new TableIndex({
+            name: 'username_idx',
+            columnNames: ['username'],
           }),
         );
     
         await queryRunner.createForeignKey(
           TableDB.USER,
           new TableForeignKey({
-            columnNames: ['avatarId'],
+            columnNames: ['avatar_id'],
             referencedColumnNames: ['id'],
             referencedTableName: TableDB.FILE,
             onDelete: 'CASCADE',
@@ -82,11 +99,12 @@ export class UserMigration1706111375580 implements MigrationInterface {
       public async down(queryRunner: QueryRunner): Promise<void> {
         const table = await queryRunner.getTable(TableDB.USER);
         const avatarForeignKey = table.foreignKeys.find(
-          (fk) => fk.columnNames.indexOf('avatarId') !== -1,
+          (fk) => fk.columnNames.indexOf('avatar_id') !== -1,
         );
 
         await queryRunner.dropForeignKeys(TableDB.USER, [avatarForeignKey]);
-        await queryRunner.dropIndex(TableDB.USER, 'emailIdx');
+        await queryRunner.dropIndex(TableDB.USER, 'email_idx');
+        await queryRunner.dropIndex(TableDB.USER, 'username_idx');
         await queryRunner.dropTable(TableDB.USER);
       }
     }

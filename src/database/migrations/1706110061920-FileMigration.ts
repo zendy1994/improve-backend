@@ -37,12 +37,12 @@ export class FileMigration1706110061920 implements MigrationInterface {
           {
             name: 'created_at',
             type: 'timestamptz',
-            default: 'CURRENT_TIMESTAMP',
+            default: 'now()',
           },
           {
             name: 'updated_at',
             type: 'timestamptz',
-            default: 'CURRENT_TIMESTAMP',
+            default: 'now()',
           },
         ],
       }),
