@@ -1,22 +1,35 @@
-import { IsDateString, IsEnum, IsNotEmpty, Matches, MinLength, IsOptional, IsString, Length, MaxLength } from 'class-validator';
+import { UserGender } from "@/common/enums/user.enum";
+import {
+  IsDateString,
+  IsString,
+  MaxLength,
+  MinLength,
+  IsEnum,
+  IsOptional,
+} from "class-validator";
 
 export class CreateUserDto {
-  @IsNotEmpty()
+  @IsString()
+  email: string;
+
   @IsString()
   username: string;
 
-  @IsNotEmpty()
   @MinLength(8)
   @MaxLength(32)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password is to weak',
-  })
   password: string;
 
-  @IsNotEmpty()
-  fullName: string;
+  @IsString()
+  first_name: string;
 
-  @IsNotEmpty()
+  @IsString()
+  last_name: string;
+
+  @IsOptional()
   @IsDateString()
-  date_of_birth: string;
+  dob: string;
+
+  @IsOptional()
+  @IsEnum(UserGender)
+  gender: UserGender;
 }

@@ -17,6 +17,8 @@ if (['staging', 'production'].includes(environment)) {
     AWS_ACCESS_KEY_ID: Joi.string().required(),
     AWS_SECRET_ACCESS_KEY: Joi.string().required(),
     AWS_PUBLIC_BUCKET_NAME: Joi.string().required(),
+    EMAIL_VERIFY_OTP: Joi.string().required(),
+    EMAIL_PASSWORD_VERIFY_OTP: Joi.string().required(),
   };
 } else {
   configValidation = {
@@ -33,6 +35,8 @@ if (['staging', 'production'].includes(environment)) {
     AWS_ACCESS_KEY_ID: Joi.string().required(),
     AWS_SECRET_ACCESS_KEY: Joi.string().required(),
     AWS_PUBLIC_BUCKET_NAME: Joi.string().required(),
+    EMAIL_VERIFY_OTP: Joi.string().required(),
+    EMAIL_PASSWORD_VERIFY_OTP: Joi.string().required(),
   };
 }
 

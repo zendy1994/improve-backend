@@ -1,19 +1,28 @@
-import { Column, Entity, Index, JoinTable, ManyToMany, OneToOne, JoinColumn } from 'typeorm';
-import { Exclude } from 'class-transformer';
-import { File } from '@/app/file/entities/file.entity';
-import { BaseEntity } from '@/common/entities/base.entity';
-import { TableDB } from '@/common/enums/table-db.enum';
+import { File } from "@/app/file/entities/file.entity";
+import { BaseEntity } from "@/common/entities/base.entity";
+import { TableDB } from "@/common/enums/table-db.enum";
+import { UserGender } from "@/common/enums/user.enum";
+import { Exclude } from "class-transformer";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToOne,
+} from "typeorm";
 
 @Entity(TableDB.USER)
 export class User extends BaseEntity {
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ type: "uuid", nullable: true })
   avatar_id: string;
 
-  @Index('email_idx', { unique: true })
+  @Index("email_idx", { unique: true })
   @Column({ unique: true })
   email: string;
 
-  @Index('username_idx', { unique: true })
+  @Index("username_idx", { unique: true })
   @Column({ unique: true })
   username: string;
 
@@ -27,18 +36,31 @@ export class User extends BaseEntity {
   @Column()
   last_name: string;
 
+  @Column({
+    type: "enum",
+    enum: UserGender,
+    nullable: true,
+  })
+  gender: string;
+
+  @Column({ type: "boolean", default: false })
+  email_verified: string[];
+
+  @Column({ type: "varchar", nullable: true, array: true })
+  blacklisted_tokens: string[];
+
   @OneToOne(() => File, (file) => file.avatar, {
     eager: true,
     nullable: true,
   })
-  @JoinColumn({ name: 'avatar_id' })
+  @JoinColumn({ name: "avatar_id" })
   avatar: File;
 
   @ManyToMany(() => User, (user) => user.following)
   @JoinTable({
-    name: 'user_following',
-    joinColumn: { name: 'follower_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'following_id', referencedColumnName: 'id' },
+    name: "USER_FOLLOW",
+    joinColumn: { name: "follower_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "following_id", referencedColumnName: "id" },
   })
   following: User[];
 

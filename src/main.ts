@@ -1,14 +1,14 @@
-import { AppModule } from '@/app.module';
-import { TransformInterceptor } from '@/interceptors/transform.interceptor';
-import { Logger, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as Sentry from '@sentry/node';
-import { config } from 'aws-sdk';
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { AppModule } from "@/app.module";
+import { TransformInterceptor } from "@/interceptors/transform.interceptor";
+import { Logger, ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import * as Sentry from "@sentry/node";
+import { config } from "aws-sdk";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -29,30 +29,30 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  app.setGlobalPrefix('api/v1', { exclude: ['/'] });
+  app.setGlobalPrefix("api/v1", { exclude: ["/"] });
 
   config.update({
-    accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID'),
-    secretAccessKey: configService.get<string>('AWS_SECRET_ACCESS_KEY'),
-    region: configService.get<string>('AWS_REGION'),
+    accessKeyId: configService.get<string>("AWS_ACCESS_KEY_ID"),
+    secretAccessKey: configService.get<string>("AWS_SECRET_ACCESS_KEY"),
+    region: configService.get<string>("AWS_REGION"),
   });
 
   const configSwagger = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Social Network API Document')
-    .setDescription('Social Network API')
-    .setVersion('1.0')
+    .setTitle("Social Network API Document")
+    .setDescription("Social Network API")
+    .setVersion("1.0")
     .build();
 
   const document = SwaggerModule.createDocument(app, configSwagger);
-  SwaggerModule.setup('api', app, document, {
+  SwaggerModule.setup("api", app, document, {
     swaggerOptions: {
-      tagsSorter: 'alpha',
-      operationsSorter: 'alpha',
+      tagsSorter: "alpha",
+      operationsSorter: "alpha",
     },
   });
 
-  const port = configService.get('PORT') ?? 8080;
+  const port = configService.get("PORT") ?? 8080;
 
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);

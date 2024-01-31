@@ -1,5 +1,6 @@
 export enum TableDB {
-    USER = 'user',
-    USER_FOLLOWING = 'user_following',
-    FILE = 'file',
+  FILE = "file",
+  USER = "user",
+  OTP = "otp",
+  USER_FOLLOW = "user_follow",
 }

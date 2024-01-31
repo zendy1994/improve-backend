@@ -8,6 +8,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { DatabaseModule } from '@/database/sql/database.module';
+import { OtpModule } from '@/app/otp/otp.module';
 
 
 
@@ -24,6 +25,7 @@ import { DatabaseModule } from '@/database/sql/database.module';
     AuthModule,
     UserModule,
     FileModule,
+    OtpModule,
   ],
   controllers: [AppController],
 })
