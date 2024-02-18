@@ -1,6 +1,10 @@
-import { SelectQueryBuilder } from 'typeorm';
+import { SelectQueryBuilder } from "typeorm";
 
-export async function paginateQuery(qb: SelectQueryBuilder<any>, page: number, limit: number) {
+export async function paginateQuery(
+  qb: SelectQueryBuilder<any>,
+  page: number,
+  limit: number
+) {
   const [items, totalItems] = await qb
     .skip((page - 1) * limit)
     .take(limit)

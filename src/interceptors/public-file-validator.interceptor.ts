@@ -4,9 +4,9 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+} from "@nestjs/common";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class PublicFileValidatorInterceptor implements NestInterceptor {
@@ -24,10 +24,12 @@ export class PublicFileValidatorInterceptor implements NestInterceptor {
     }
 
     if (!file && this.isFileRequired) {
-      throw new BadRequestException('File is required.');
+      throw new BadRequestException("File is required.");
     }
 
-    const fileTypeIsValid = this.allowedFileTypes.some((regex) => regex.test(file.mimetype));
+    const fileTypeIsValid = this.allowedFileTypes.some((regex) =>
+      regex.test(file.mimetype)
+    );
 
     if (!fileTypeIsValid) {
       throw new BadRequestException(this.errorMessage);

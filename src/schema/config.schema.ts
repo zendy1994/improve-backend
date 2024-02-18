@@ -1,13 +1,13 @@
-import * as Joi from '@hapi/joi';
+import * as Joi from "@hapi/joi";
 
-let environment = 'development';
+let environment = "development";
 if (process.env.NODE_ENV) {
   environment = process.env.NODE_ENV;
 }
 
 let configValidation;
 
-if (['staging', 'production'].includes(environment)) {
+if (["staging", "production"].includes(environment)) {
   configValidation = {
     DATABASE_URL: Joi.string().required(),
     SENTRY_DNS: Joi.string().required(),

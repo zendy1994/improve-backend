@@ -59,12 +59,17 @@ export class User extends BaseEntity {
 
   @ManyToMany(() => User, (user) => user.following)
   @JoinTable({
-    name: "USER_FOLLOW",
+    name: TableDB.USER_FOLLOW,
     joinColumn: { name: "follower_id", referencedColumnName: "id" },
     inverseJoinColumn: { name: "following_id", referencedColumnName: "id" },
   })
-  following: User[];
+  followers: User[];
 
   @ManyToMany(() => User, (user) => user.followers)
-  followers: User[];
+  @JoinTable({
+    name: TableDB.USER_FOLLOW,
+    joinColumn: { name: "following_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "follower_id", referencedColumnName: "id" },
+  })
+  following: User[];
 }

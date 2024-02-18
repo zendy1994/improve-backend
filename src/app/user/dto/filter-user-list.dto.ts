@@ -1,15 +1,15 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from "class-validator";
 
 export class FilterUserListDto {
-    @IsOptional()
-    @IsString()
-    username: string;
+  @IsOptional()
+  @IsString()
+  username: string;
 
-    @IsOptional()
-    @IsString()
-    email: string;
+  @IsOptional()
+  @IsString()
+  email: string;
 
-    @IsOptional()
-    @IsString()
-    order_by: 'ASC' | 'DESC';
+  @IsOptional()
+  @IsString()
+  order_by: "ASC" | "DESC";
 }
