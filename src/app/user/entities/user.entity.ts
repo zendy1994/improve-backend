@@ -1,17 +1,17 @@
+import {
+  Entity,
+  Column,
+  Index,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
+import { Exclude } from "class-transformer";
 import { File } from "@/app/file/entities/file.entity";
 import { BaseEntity } from "@/common/entities/base.entity";
 import { TableDB } from "@/common/enums/table-db.enum";
 import { UserGender } from "@/common/enums/user.enum";
-import { Exclude } from "class-transformer";
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  OneToOne,
-} from "typeorm";
 
 @Entity(TableDB.USER)
 export class User extends BaseEntity {
@@ -44,9 +44,10 @@ export class User extends BaseEntity {
   gender: string;
 
   @Column({ type: "boolean", default: false })
-  email_verified: string[];
+  email_verified: boolean;
 
   @Column({ type: "varchar", nullable: true, array: true })
+  @Exclude()
   blacklisted_tokens: string[];
 
   @OneToOne(() => File, (file) => file.avatar, {

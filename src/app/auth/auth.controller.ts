@@ -1,7 +1,7 @@
 import { AuthService } from "@/app/auth/auth.service";
 import { AuthCredentialsDto } from "@/app/auth/dto/auth-credentials.dto";
 import { CreateUserDto } from "@/app/auth/dto/create-user.dto";
-import { ResetPasswordDto } from "@/app/auth/dto/reset-password.dto";
+import { ChangePasswordDto } from "@/app/auth/dto/change-password.dto";
 import { User } from "@/app/user/entities/user.entity";
 import { GetToken } from "@/decorators/get-token.decorator";
 import { GetUser } from "@/decorators/get-user.decorator";
@@ -11,10 +11,14 @@ import {
   Controller,
   Delete,
   Post,
+  Patch,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { VerifyOtpDto } from "@/app/otp/dto/verify-otp.dto";
+import { JwtAuthGuard } from "@/app/auth/guards/jwt-auth.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -43,12 +47,18 @@ export class AuthController {
   }
 
   @Delete("/sign-out")
+  @UseGuards(JwtAuthGuard)
   signOut(@GetUser() user: User, @GetToken() token: string) {
     return this.authService.signOut(user, token);
   }
 
-  @Post("/reset-password")
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authService.resetPassword(resetPasswordDto);
+  @Patch("/email-verification")
+  emailVerification(verifyOtpDto: VerifyOtpDto) {
+    return this.authService.emailVerification(verifyOtpDto);
+  }
+
+  @Post("/change-password")
+  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    return this.authService.changePassword(changePasswordDto);
   }
 }

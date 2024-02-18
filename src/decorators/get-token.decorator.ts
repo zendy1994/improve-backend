@@ -1,8 +1,15 @@
-import { User } from '@/app/user/entities/user.entity';
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
-export const GetToken = createParamDecorator((_data: unknown, ctx: ExecutionContext): User => {
-    const request = ctx.switchToHttp().getRequest();
+export const GetToken = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): string => {
+    const req = ctx.switchToHttp().getRequest();
+    const authorizationHeader = req.headers["authorization"];
 
-    return request;
-});
+    if (authorizationHeader && typeof authorizationHeader === "string") {
+      const [_, token] = authorizationHeader.split(" ");
+      return token;
+    }
+
+    return null;
+  }
+);

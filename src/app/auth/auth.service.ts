@@ -1,18 +1,16 @@
 import { AuthCredentialsDto } from "@/app/auth/dto/auth-credentials.dto";
+import { ChangePasswordDto } from "@/app/auth/dto/change-password.dto";
 import { CreateUserDto } from "@/app/auth/dto/create-user.dto";
-import { ResetPasswordDto } from "@/app/auth/dto/reset-password.dto";
+import { VerifyOtpDto } from "@/app/otp/dto/verify-otp.dto";
 import { OtpService } from "@/app/otp/otp.service";
 import { User } from "@/app/user/entities/user.entity";
 import { UserService } from "@/app/user/user.service";
-import { PostgresErrorCode } from "@/common/enums/postgres-error-code.enum";
 import { ValidatorConstants } from "@/utils/constants/validator.constant";
 import {
   BadRequestException,
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -57,15 +55,13 @@ export class AuthService {
       plainTextPassword,
       hashedPassword
     );
+
     if (!isPasswordMatching) {
       throw new BadRequestException("Wrong credentials provided");
     }
   }
 
-  async signUp(
-    createUserDto: CreateUserDto,
-    avatar: Express.Multer.File
-  ): Promise<User> {
+  async signUp(createUserDto: CreateUserDto, avatar: Express.Multer.File) {
     const { email, username, password } = createUserDto;
 
     const salt = await bcrypt.genSalt();
@@ -89,38 +85,41 @@ export class AuthService {
       await this.userService.addAvatar(savedUser.id, avatar);
     }
 
-    const user: User = await this.userService.findUserByIdentifier(email);
+    await this.userService.findUserByIdentifier(email);
 
-    return user;
+    return "Created account successfully";
   }
 
   async signIn(authCredentialsDto: AuthCredentialsDto) {
-    try {
-      const { identifier, password } = authCredentialsDto;
+    const { identifier, password } = authCredentialsDto;
 
-      const user: User = await this.userService.findUserByIdentifier(
-        identifier
-      );
+    const user: User = await this.userRepository
+      .createQueryBuilder("user")
+      .select(["user", "user.avatar"])
+      .addSelect("user.password")
+      .where("user.username = :identifier OR user.email = :identifier", {
+        identifier,
+      })
+      .getOne();
 
-      await this.verifyPassword(password, user.password);
+    console.log(password, user.password);
 
-      const { id, email, username } = user;
+    await this.verifyPassword(password, user.password);
 
-      const accessToken: string = await this.jwtService.sign({
-        id,
-        email,
-        username,
-      });
+    const { id, email, username } = user;
 
-      return {
-        profile: {
-          ...user,
-        },
-        access_token: accessToken,
-      };
-    } catch (error) {
-      throw new UnauthorizedException("Please check your login credentials");
-    }
+    const accessToken: string = await this.jwtService.sign({
+      id,
+      email,
+      username,
+    });
+
+    return {
+      profile: {
+        ...user,
+      },
+      access_token: accessToken,
+    };
   }
 
   async signOut(user: User, token: string): Promise<string> {
@@ -135,23 +134,45 @@ export class AuthService {
     return "Logout successfully";
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    const { username, newPassword } = resetPasswordDto;
-
-    const user: User = await this.userService.findUserByIdentifier(username);
+  async emailVerification(verifyOtpDto: VerifyOtpDto) {
+    const { email } = verifyOtpDto;
+    const user = await this.userService.findUserByIdentifier(email);
 
     if (!user) {
       throw new NotFoundException(ValidatorConstants.NOT_FOUND("User"));
     }
 
+    await this.otpService.verifyOtpByEmail(verifyOtpDto);
+
+    await this.userRepository.update(user.id, {
+      email_verified: true,
+    });
+
+    return "Email verification successfully";
+  }
+
+  async changePassword(changePasswordDto: ChangePasswordDto) {
+    const { email, new_password, code } = changePasswordDto;
+
+    const user: User = await this.userService.findUserByIdentifier(email);
+
+    if (!user) {
+      throw new NotFoundException(ValidatorConstants.NOT_FOUND("User"));
+    }
+
+    await this.otpService.verifyOtpByEmail({
+      email,
+      code,
+    });
+
     const salt = await bcrypt.genSalt();
-    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+    const hashedNewPassword = await bcrypt.hash(new_password, salt);
 
     await this.userRepository.save({
       ...user,
       password: hashedNewPassword,
     });
 
-    return this.userService.getUserDetailByUserId(user.id);
+    return "Reset password successfully";
   }
 }

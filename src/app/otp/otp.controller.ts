@@ -17,7 +17,7 @@ export class OtpController {
   }
 
   @Post("/verification")
-  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<string> {
+  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<boolean> {
     return this.otpService.verifyOtpByEmail(verifyOtpDto);
   }
 }

@@ -42,8 +42,7 @@ export class OtpService {
       user: this.configService.get<string>("EMAIL_VERIFY_OTP"),
       to: email,
       subject: "Social Network App - No Reply",
-      text:
-        "Your email verification OTP is ${code}. It will expire in 5 minutes.",
+      text: `Your email verification OTP is ${otp}. It will expire in 5 minutes.`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -59,7 +58,7 @@ export class OtpService {
     return "Send OTP successfully";
   }
 
-  async verifyOtpByEmail(verifyOtpDto: VerifyOtpDto): Promise<string> {
+  async verifyOtpByEmail(verifyOtpDto: VerifyOtpDto): Promise<boolean> {
     const { email, code } = verifyOtpDto;
     const otpRecord = await this.otpRepository.findOne({
       where: {
@@ -75,6 +74,6 @@ export class OtpService {
 
     await this.otpRepository.delete({ email });
 
-    return "OTP verified";
+    return true;
   }
 }
