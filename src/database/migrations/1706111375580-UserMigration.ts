@@ -5,14 +5,14 @@ import {
   TableForeignKey,
   TableIndex,
 } from "typeorm";
-import { TableDB } from "../../common/enums/table-db.enum";
+import { TableNames } from "../../utils/constants/table-names.constant";
 import { UserGender } from "../../common/enums/user.enum";
 
 export class UserMigration1706111375580 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: TableDB.USER,
+        name: TableNames.USER,
         columns: [
           {
             name: "id",
@@ -87,7 +87,7 @@ export class UserMigration1706111375580 implements MigrationInterface {
     );
 
     await queryRunner.createIndex(
-      TableDB.USER,
+      TableNames.USER,
       new TableIndex({
         name: "email_idx",
         columnNames: ["email"],
@@ -95,7 +95,7 @@ export class UserMigration1706111375580 implements MigrationInterface {
     );
 
     await queryRunner.createIndex(
-      TableDB.USER,
+      TableNames.USER,
       new TableIndex({
         name: "username_idx",
         columnNames: ["username"],
@@ -103,25 +103,25 @@ export class UserMigration1706111375580 implements MigrationInterface {
     );
 
     await queryRunner.createForeignKey(
-      TableDB.USER,
+      TableNames.USER,
       new TableForeignKey({
         columnNames: ["avatar_id"],
         referencedColumnNames: ["id"],
-        referencedTableName: TableDB.FILE,
+        referencedTableName: TableNames.FILE,
         onDelete: "CASCADE",
       })
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable(TableDB.USER);
+    const table = await queryRunner.getTable(TableNames.USER);
     const avatarForeignKey = table.foreignKeys.find(
       (fk) => fk.columnNames.indexOf("avatar_id") !== -1
     );
 
-    await queryRunner.dropForeignKeys(TableDB.USER, [avatarForeignKey]);
-    await queryRunner.dropIndex(TableDB.USER, "email_idx");
-    await queryRunner.dropIndex(TableDB.USER, "username_idx");
-    await queryRunner.dropTable(TableDB.USER);
+    await queryRunner.dropForeignKeys(TableNames.USER, [avatarForeignKey]);
+    await queryRunner.dropIndex(TableNames.USER, "email_idx");
+    await queryRunner.dropIndex(TableNames.USER, "username_idx");
+    await queryRunner.dropTable(TableNames.USER);
   }
 }

@@ -5,7 +5,7 @@ import { FollowModule } from "@/app/follow/follow.module";
 import { OtpModule } from "@/app/otp/otp.module";
 import { UserModule } from "@/app/user/user.module";
 import configuration from "@/config/configuration";
-import { DatabaseModule } from "@/database/sql/database.module";
+import { DatabaseModule } from "@/database/database.module";
 import { configValidationSchema } from "@/schema/config.schema";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";

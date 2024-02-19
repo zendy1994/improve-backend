@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
-import { TableDB } from "../../common/enums/table-db.enum";
+import { TableNames } from "../../utils/constants/table-names.constant";
 
 export class OtpMigration1706692517036 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: TableDB.OTP,
+        name: TableNames.OTP,
         columns: [
           {
             name: "id",
@@ -45,6 +45,6 @@ export class OtpMigration1706692517036 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable(TableDB.OTP);
+    await queryRunner.dropTable(TableNames.OTP);
   }
 }

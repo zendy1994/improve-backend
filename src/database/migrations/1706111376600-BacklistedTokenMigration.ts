@@ -6,11 +6,12 @@ import {
 } from "typeorm";
 import { TableNames } from "../../utils/constants/table-names.constant";
 
-export class UserFollowMigration1706692679617 implements MigrationInterface {
+export class BacklistedTokenMigration1706111376600
+  implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: TableNames.USER_FOLLOW,
+        name: TableNames.BLACKLISTED_TOKEN,
         columns: [
           {
             name: "id",
@@ -20,11 +21,11 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
             default: `uuid_generate_v4()`,
           },
           {
-            name: "follower_id",
-            type: "uuid",
+            name: "token",
+            type: "varchar",
           },
           {
-            name: "following_id",
+            name: "user_id",
             type: "uuid",
           },
           {
@@ -43,19 +44,9 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
     );
 
     await queryRunner.createForeignKey(
-      TableNames.USER_FOLLOW,
+      TableNames.BLACKLISTED_TOKEN,
       new TableForeignKey({
-        columnNames: ["follower_id"],
-        referencedColumnNames: ["id"],
-        referencedTableName: TableNames.USER,
-        onDelete: "CASCADE",
-      })
-    );
-
-    await queryRunner.createForeignKey(
-      TableNames.USER_FOLLOW,
-      new TableForeignKey({
-        columnNames: ["following_id"],
+        columnNames: ["user_id"],
         referencedColumnNames: ["id"],
         referencedTableName: TableNames.USER,
         onDelete: "CASCADE",
@@ -64,18 +55,14 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable(TableNames.USER_FOLLOW);
-    const followingForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf("follower_id") !== -1
-    );
-    const followerForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf("following_id") !== -1
+    const table = await queryRunner.getTable(TableNames.BLACKLISTED_TOKEN);
+    const userIdForeignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf("user_id") !== -1
     );
 
-    await queryRunner.dropForeignKeys(TableNames.USER_FOLLOW, [
-      followingForeignKey,
-      followerForeignKey,
+    await queryRunner.dropForeignKeys(TableNames.BLACKLISTED_TOKEN, [
+      userIdForeignKey,
     ]);
-    await queryRunner.dropTable(TableNames.USER_FOLLOW);
+    await queryRunner.dropTable(TableNames.BLACKLISTED_TOKEN);
   }
 }

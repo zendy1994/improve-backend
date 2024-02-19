@@ -5,6 +5,7 @@ import { User } from "@/app/user/entities/user.entity";
 import { UserService } from "@/app/user/user.service";
 import { GetUser } from "@/decorators/get-user.decorator";
 import { PublicFileValidatorInterceptor } from "@/interceptors/public-file-validator.interceptor";
+import { Routes } from "@/utils/constants/routes.constant";
 import {
   Body,
   Controller,
@@ -22,7 +23,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 
-@Controller("user")
+@Controller(Routes.USER)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

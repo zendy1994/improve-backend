@@ -1,9 +1,9 @@
 import { User } from "@/app/user/entities/user.entity";
 import { BaseEntity } from "@/common/entities/base.entity";
-import { TableDB } from "@/common/enums/table-db.enum";
+import { TableNames } from "@/utils/constants/table-names.constant";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-@Entity(TableDB.USER_FOLLOW)
+@Entity(TableNames.USER_FOLLOW)
 export class UserFollow extends BaseEntity {
   @Column({ type: "uuid" })
   follower_id: string;

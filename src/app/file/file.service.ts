@@ -1,5 +1,5 @@
 import { File } from "@/app/file/entities/file.entity";
-import { ValidatorConstants } from "@/utils/constants/validator.constant";
+import { ValidatorConstants } from "@/utils/constants/validators.constant";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";

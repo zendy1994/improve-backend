@@ -1,19 +1,21 @@
-import {
-  Entity,
-  Column,
-  Index,
-  OneToOne,
-  JoinColumn,
-  ManyToMany,
-  JoinTable,
-} from "typeorm";
-import { Exclude } from "class-transformer";
 import { File } from "@/app/file/entities/file.entity";
+import { BlacklistedToken } from "@/app/user/entities/blacklisted_token.entity";
 import { BaseEntity } from "@/common/entities/base.entity";
-import { TableDB } from "@/common/enums/table-db.enum";
+import { TableNames } from "@/utils/constants/table-names.constant";
 import { UserGender } from "@/common/enums/user.enum";
+import { Exclude } from "class-transformer";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+} from "typeorm";
 
-@Entity(TableDB.USER)
+@Entity(TableNames.USER)
 export class User extends BaseEntity {
   @Column({ type: "uuid", nullable: true })
   avatar_id: string;
@@ -46,10 +48,6 @@ export class User extends BaseEntity {
   @Column({ type: "boolean", default: false })
   email_verified: boolean;
 
-  @Column({ type: "varchar", nullable: true, array: true })
-  @Exclude()
-  blacklisted_tokens: string[];
-
   @OneToOne(() => File, (file) => file.avatar, {
     eager: true,
     nullable: true,
@@ -57,9 +55,15 @@ export class User extends BaseEntity {
   @JoinColumn({ name: "avatar_id" })
   avatar: File;
 
+  @OneToMany(
+    () => BlacklistedToken,
+    (blacklistedToken) => blacklistedToken.user
+  )
+  blacklistedTokens: BlacklistedToken[];
+
   @ManyToMany(() => User, (user) => user.following)
   @JoinTable({
-    name: TableDB.USER_FOLLOW,
+    name: TableNames.USER_FOLLOW,
     joinColumn: { name: "follower_id", referencedColumnName: "id" },
     inverseJoinColumn: { name: "following_id", referencedColumnName: "id" },
   })
@@ -67,7 +71,7 @@ export class User extends BaseEntity {
 
   @ManyToMany(() => User, (user) => user.followers)
   @JoinTable({
-    name: TableDB.USER_FOLLOW,
+    name: TableNames.USER_FOLLOW,
     joinColumn: { name: "following_id", referencedColumnName: "id" },
     inverseJoinColumn: { name: "follower_id", referencedColumnName: "id" },
   })

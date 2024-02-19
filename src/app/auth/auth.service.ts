@@ -5,7 +5,7 @@ import { VerifyOtpDto } from "@/app/otp/dto/verify-otp.dto";
 import { OtpService } from "@/app/otp/otp.service";
 import { User } from "@/app/user/entities/user.entity";
 import { UserService } from "@/app/user/user.service";
-import { ValidatorConstants } from "@/utils/constants/validator.constant";
+import { ValidatorConstants } from "@/utils/constants/validators.constant";
 import {
   BadRequestException,
   ConflictException,
@@ -16,12 +16,15 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
+import { BlacklistedToken } from "@/app/user/entities/blacklisted_token.entity";
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(BlacklistedToken)
+    private readonly blacklistedTokenRepository: Repository<BlacklistedToken>,
 
     private jwtService: JwtService,
     private userService: UserService,
@@ -32,19 +35,20 @@ export class AuthService {
     const user = await this.userRepository.findOneBy({ id: userId });
 
     if (user) {
-      user.blacklisted_tokens = user.blacklisted_tokens || [];
-      user.blacklisted_tokens.push(token);
+      const blacklistedToken = new BlacklistedToken();
+      blacklistedToken.token = token;
+      blacklistedToken.user = user;
 
-      await this.userRepository.save(user);
+      await this.blacklistedTokenRepository.save(blacklistedToken);
     }
   }
 
   async isTokenBlacklisted(userId: string, token: string): Promise<boolean> {
-    const user = await this.userRepository.findOneBy({ id: userId });
+    const blacklistedToken = await this.blacklistedTokenRepository.findOne({
+      where: { user_id: userId, token: token },
+    });
 
-    return (
-      user && user.blacklisted_tokens && user.blacklisted_tokens.includes(token)
-    );
+    return !!blacklistedToken;
   }
 
   private async verifyPassword(
@@ -101,8 +105,6 @@ export class AuthService {
         identifier,
       })
       .getOne();
-
-    console.log(password, user.password);
 
     await this.verifyPassword(password, user.password);
 

@@ -1,10 +1,10 @@
 import { BaseEntity } from "@/common/entities/base.entity";
-import { TableDB } from "@/common/enums/table-db.enum";
+import { TableNames } from "@/utils/constants/table-names.constant";
 import { User } from "@/app/user/entities/user.entity";
 import { IsNumber } from "class-validator";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 
-@Entity(TableDB.FILE)
+@Entity(TableNames.FILE)
 export class File extends BaseEntity {
   @Column("text")
   url: string;

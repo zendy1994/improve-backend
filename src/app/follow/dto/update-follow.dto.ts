@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateFollowDto } from './create-follow.dto';
+import { CreateFollowDto } from "@/app/follow/dto/create-follow.dto";
+import { PartialType } from "@nestjs/swagger";
 
 export class UpdateFollowDto extends PartialType(CreateFollowDto) {}

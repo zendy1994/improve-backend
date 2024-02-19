@@ -12,6 +12,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { BlacklistedToken } from "@/app/user/entities/blacklisted_token.entity";
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
         },
       }),
     }),
-    TypeOrmModule.forFeature([User, File]),
+    TypeOrmModule.forFeature([User, BlacklistedToken, File]),
     FileModule,
     UserModule,
     OtpModule,

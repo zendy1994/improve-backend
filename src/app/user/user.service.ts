@@ -3,7 +3,7 @@ import { FilterUserListDto } from "@/app/user/dto/filter-user-list.dto";
 import { UpdateUserDto } from "@/app/user/dto/update-user.dto";
 import { User } from "@/app/user/entities/user.entity";
 import { paginateQuery } from "@/utils/helpers/pagination-qb.helper";
-import { ValidatorConstants } from "@/utils/constants/validator.constant";
+import { ValidatorConstants } from "@/utils/constants/validators.constant";
 import {
   ConflictException,
   Injectable,

@@ -1,9 +1,9 @@
 import { BaseEntity } from "@/common/entities/base.entity";
-import { TableDB } from "@/common/enums/table-db.enum";
+import { TableNames } from "@/utils/constants/table-names.constant";
 import { IsEmail, IsString } from "class-validator";
 import { Column, Entity } from "typeorm";
 
-@Entity(TableDB.OTP)
+@Entity(TableNames.OTP)
 export class Otp extends BaseEntity {
   @Column()
   @IsEmail()

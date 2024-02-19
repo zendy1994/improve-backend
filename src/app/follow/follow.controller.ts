@@ -2,6 +2,7 @@ import { JwtAuthGuard } from "@/app/auth/guards/jwt-auth.guard";
 import { User } from "@/app/user/entities/user.entity";
 import { GetUser } from "@/decorators/get-user.decorator";
 import { SentryInterceptor } from "@/interceptors/sentry.interceptor";
+import { Routes } from "@/utils/constants/routes.constant";
 import {
   Body,
   Controller,
@@ -21,7 +22,7 @@ import { FollowService } from "./follow.service";
 
 @ApiTags("Follow")
 @UseInterceptors(SentryInterceptor)
-@Controller("follow")
+@Controller(Routes.FOLLOW)
 @UseGuards(JwtAuthGuard)
 export class FollowController {
   constructor(private readonly followService: FollowService) {}
