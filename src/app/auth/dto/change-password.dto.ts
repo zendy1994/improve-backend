@@ -1,4 +1,4 @@
-import { IsString, MinLength, Length } from "class-validator";
+import { IsString, MinLength, Length } from 'class-validator';
 
 export class ChangePasswordDto {
   @IsString()

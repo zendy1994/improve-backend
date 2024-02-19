@@ -1,13 +1,13 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
-import { ExecutionContext } from "@nestjs/common";
-import { User } from "@/app/user/entities/user.entity";
-import { BlacklistedToken } from "@/app/user/entities/blacklisted_token.entity";
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ExecutionContext } from '@nestjs/common';
+import { User } from '@/app/user/entities/user.entity';
+import { BlacklistedToken } from '@/app/user/entities/blacklisted_token.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard("jwt") {
+export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     @InjectRepository(BlacklistedToken)
     private readonly blacklistedTokenRepository: Repository<BlacklistedToken>
@@ -22,19 +22,16 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
   handleRequest(err: Error, user: any, _info: any, context: any, _status: any) {
     this.isTokenBlacklisted(user, context).then((isTokenBlacklisted) => {
       if (err || !user || isTokenBlacklisted) {
-        throw err || new UnauthorizedException("Token has expired");
+        throw err || new UnauthorizedException('Token has expired');
       }
     });
 
     return user;
   }
 
-  private async isTokenBlacklisted(
-    user: User,
-    context: ExecutionContext
-  ): Promise<boolean> {
+  private async isTokenBlacklisted(user: User, context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers.authorization?.split(" ")[1];
+    const token = request.headers.authorization?.split(' ')[1];
 
     if (!token) {
       return false;

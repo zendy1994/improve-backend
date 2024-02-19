@@ -1,7 +1,7 @@
-import { User } from "@/app/user/entities/user.entity";
-import { BaseEntity } from "@/common/entities/base.entity";
-import { TableNames } from "@/utils/constants/table-names.constant";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { User } from '@/app/user/entities/user.entity';
+import { BaseEntity } from '@/common/entities/base.entity';
+import { TableNames } from '@/utils/constants/table-names.constant';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity(TableNames.BLACKLISTED_TOKEN)
 export class BlacklistedToken extends BaseEntity {
@@ -9,11 +9,11 @@ export class BlacklistedToken extends BaseEntity {
   token: string;
 
   @ManyToOne(() => User, (user) => user.blacklistedTokens, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: "user_id" })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ type: "uuid" })
+  @Column({ type: 'uuid' })
   user_id: string;
 }

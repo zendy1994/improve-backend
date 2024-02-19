@@ -1,7 +1,7 @@
-import { BaseEntity } from "@/common/entities/base.entity";
-import { TableNames } from "@/utils/constants/table-names.constant";
-import { IsEmail, IsString } from "class-validator";
-import { Column, Entity } from "typeorm";
+import { BaseEntity } from '@/common/entities/base.entity';
+import { TableNames } from '@/utils/constants/table-names.constant';
+import { IsEmail, IsString } from 'class-validator';
+import { Column, Entity } from 'typeorm';
 
 @Entity(TableNames.OTP)
 export class Otp extends BaseEntity {
@@ -13,6 +13,6 @@ export class Otp extends BaseEntity {
   @IsString()
   code: string;
 
-  @Column({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP(6)" })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP(6)' })
   expires_at: Date;
 }

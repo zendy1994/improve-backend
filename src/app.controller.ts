@@ -1,13 +1,13 @@
-import { SentryInterceptor } from "@/interceptors/sentry.interceptor";
-import { Controller, Get, UseInterceptors } from "@nestjs/common";
+import { SentryInterceptor } from '@/interceptors/sentry.interceptor';
+import { Controller, Get, UseInterceptors } from '@nestjs/common';
 
 @UseInterceptors(SentryInterceptor)
-@Controller("/")
+@Controller('/')
 export class AppController {
   constructor() {}
 
-  @Get("/")
+  @Get('/')
   healthCheck() {
-    return "Ok";
+    return 'Ok';
   }
 }

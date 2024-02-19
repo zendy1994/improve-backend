@@ -1,7 +1,7 @@
-import { JwtAuthGuard } from "@/app/auth/guards/jwt-auth.guard";
-import { File } from "@/app/file/entities/file.entity";
-import { FileService } from "@/app/file/file.service";
-import { Routes } from "@/utils/constants/routes.constant";
+import { JwtAuthGuard } from '@/app/auth/guards/jwt-auth.guard';
+import { File } from '@/app/file/entities/file.entity';
+import { FileService } from '@/app/file/file.service';
+import { Routes } from '@/utils/constants/routes.constant';
 import {
   Controller,
   Post,
@@ -9,24 +9,24 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
-} from "@nestjs/common";
-import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
-import { ApiTags } from "@nestjs/swagger";
+} from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags("File")
+@ApiTags('File')
 @Controller(Routes.FILE)
 @UseGuards(JwtAuthGuard)
 export class FileController {
   constructor(private fileService: FileService) {}
 
-  @Post("/upload")
-  @UseInterceptors(FileInterceptor("file"))
+  @Post('/upload')
+  @UseInterceptors(FileInterceptor('file'))
   uploadPublicFile(@UploadedFile() file: Express.Multer.File): Promise<File> {
     return this.fileService.uploadSingleFile(file);
   }
 
-  @Post("/upload/multiple")
-  @UseInterceptors(FilesInterceptor("files"))
+  @Post('/upload/multiple')
+  @UseInterceptors(FilesInterceptor('files'))
   uploadMultiplePublicFile(
     @UploadedFiles() files: Array<Express.Multer.File>
   ): Promise<Array<File>> {

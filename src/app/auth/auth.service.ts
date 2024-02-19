@@ -1,22 +1,22 @@
-import { AuthCredentialsDto } from "@/app/auth/dto/auth-credentials.dto";
-import { ChangePasswordDto } from "@/app/auth/dto/change-password.dto";
-import { CreateUserDto } from "@/app/auth/dto/create-user.dto";
-import { VerifyOtpDto } from "@/app/otp/dto/verify-otp.dto";
-import { OtpService } from "@/app/otp/otp.service";
-import { User } from "@/app/user/entities/user.entity";
-import { UserService } from "@/app/user/user.service";
-import { ValidatorConstants } from "@/utils/constants/validators.constant";
+import { AuthCredentialsDto } from '@/app/auth/dto/auth-credentials.dto';
+import { ChangePasswordDto } from '@/app/auth/dto/change-password.dto';
+import { CreateUserDto } from '@/app/auth/dto/create-user.dto';
+import { VerifyOtpDto } from '@/app/otp/dto/verify-otp.dto';
+import { OtpService } from '@/app/otp/otp.service';
+import { User } from '@/app/user/entities/user.entity';
+import { UserService } from '@/app/user/user.service';
+import { ValidatorConstants } from '@/utils/constants/validators.constant';
 import {
   BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
-} from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { InjectRepository } from "@nestjs/typeorm";
-import * as bcrypt from "bcrypt";
-import { Repository } from "typeorm";
-import { BlacklistedToken } from "@/app/user/entities/blacklisted_token.entity";
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
+import { BlacklistedToken } from '@/app/user/entities/blacklisted_token.entity';
 
 @Injectable()
 export class AuthService {
@@ -51,17 +51,11 @@ export class AuthService {
     return !!blacklistedToken;
   }
 
-  private async verifyPassword(
-    plainTextPassword: string,
-    hashedPassword: string
-  ) {
-    const isPasswordMatching = await bcrypt.compare(
-      plainTextPassword,
-      hashedPassword
-    );
+  private async verifyPassword(plainTextPassword: string, hashedPassword: string) {
+    const isPasswordMatching = await bcrypt.compare(plainTextPassword, hashedPassword);
 
     if (!isPasswordMatching) {
-      throw new BadRequestException("Wrong credentials provided");
+      throw new BadRequestException('Wrong credentials provided');
     }
   }
 
@@ -71,13 +65,10 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const isTaken = await this.userService.isEmailOrUsernameTaken(
-      email,
-      username
-    );
+    const isTaken = await this.userService.isEmailOrUsernameTaken(email, username);
 
     if (isTaken) {
-      throw new ConflictException("Email or username already exists");
+      throw new ConflictException('Email or username already exists');
     }
 
     const savedUser = await this.userRepository.save({
@@ -91,17 +82,17 @@ export class AuthService {
 
     await this.userService.findUserByIdentifier(email);
 
-    return "Created account successfully";
+    return 'Created account successfully';
   }
 
   async signIn(authCredentialsDto: AuthCredentialsDto) {
     const { identifier, password } = authCredentialsDto;
 
     const user: User = await this.userRepository
-      .createQueryBuilder("user")
-      .select(["user", "user.avatar"])
-      .addSelect("user.password")
-      .where("user.username = :identifier OR user.email = :identifier", {
+      .createQueryBuilder('user')
+      .select(['user', 'user.avatar'])
+      .addSelect('user.password')
+      .where('user.username = :identifier OR user.email = :identifier', {
         identifier,
       })
       .getOne();
@@ -128,12 +119,12 @@ export class AuthService {
     const { id: userId } = user;
 
     if (await this.isTokenBlacklisted(userId, token)) {
-      return "Token is already blacklisted";
+      return 'Token is already blacklisted';
     }
 
     await this.blacklistToken(userId, token);
 
-    return "Logout successfully";
+    return 'Logout successfully';
   }
 
   async emailVerification(verifyOtpDto: VerifyOtpDto) {
@@ -141,7 +132,7 @@ export class AuthService {
     const user = await this.userService.findUserByIdentifier(email);
 
     if (!user) {
-      throw new NotFoundException(ValidatorConstants.NOT_FOUND("User"));
+      throw new NotFoundException(ValidatorConstants.NOT_FOUND('User'));
     }
 
     await this.otpService.verifyOtpByEmail(verifyOtpDto);
@@ -150,7 +141,7 @@ export class AuthService {
       email_verified: true,
     });
 
-    return "Email verification successfully";
+    return 'Email verification successfully';
   }
 
   async changePassword(changePasswordDto: ChangePasswordDto) {
@@ -159,7 +150,7 @@ export class AuthService {
     const user: User = await this.userService.findUserByIdentifier(email);
 
     if (!user) {
-      throw new NotFoundException(ValidatorConstants.NOT_FOUND("User"));
+      throw new NotFoundException(ValidatorConstants.NOT_FOUND('User'));
     }
 
     await this.otpService.verifyOtpByEmail({
@@ -175,6 +166,6 @@ export class AuthService {
       password: hashedNewPassword,
     });
 
-    return "Reset password successfully";
+    return 'Reset password successfully';
   }
 }

@@ -1,16 +1,12 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { CreateFollowDto } from "./dto/create-follow.dto";
-import { UpdateFollowDto } from "./dto/update-follow.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "@/app/user/entities/user.entity";
-import { UserService } from "../user/user.service";
-import { Repository } from "typeorm";
-import dayjs from "dayjs";
-import { paginateQuery } from "@/utils/helpers/pagination-qb.helper";
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateFollowDto } from './dto/create-follow.dto';
+import { UpdateFollowDto } from './dto/update-follow.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '@/app/user/entities/user.entity';
+import { UserService } from '../user/user.service';
+import { Repository } from 'typeorm';
+import dayjs from 'dayjs';
+import { paginateQuery } from '@/utils/helpers/pagination-qb.helper';
 
 @Injectable()
 export class FollowService {
@@ -28,12 +24,12 @@ export class FollowService {
     const following = await this.userService.findUserById(follow_user_id);
 
     if (!following) {
-      throw new NotFoundException("User to follow not found");
+      throw new NotFoundException('User to follow not found');
     }
 
     const currentUser = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ["following"],
+      relations: ['following'],
     });
 
     const alreadyFollowing = currentUser.following.some(
@@ -41,14 +37,14 @@ export class FollowService {
     );
 
     if (alreadyFollowing) {
-      throw new ConflictException("Already following this user");
+      throw new ConflictException('Already following this user');
     }
 
     currentUser.following.push(following);
 
     await this.userRepository.save(currentUser);
 
-    return "User followed successfully";
+    return 'User followed successfully';
   }
 
   async unfollowUser(user: User, userIdToUnfollow: string) {
@@ -56,7 +52,7 @@ export class FollowService {
 
     const currentUser = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ["following"],
+      relations: ['following'],
     });
 
     currentUser.following = currentUser.following.filter(
@@ -65,7 +61,7 @@ export class FollowService {
 
     await this.userRepository.save(currentUser);
 
-    return "User unfollowed successfully";
+    return 'User unfollowed successfully';
   }
 
   async getFollowingUsers(user: User, page: number = 1, limit: number = 10) {
@@ -73,20 +69,18 @@ export class FollowService {
 
     const currentUser = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ["following"],
+      relations: ['following'],
     });
 
     if (!currentUser.following || !currentUser.following.length) {
-      throw new NotFoundException("User is not following anyone.");
+      throw new NotFoundException('User is not following anyone.');
     }
 
     const followingUsers = currentUser.following;
 
-    const qb = this.userRepository
-      .createQueryBuilder("user")
-      .where("user.id IN (:...ids)", {
-        ids: followingUsers.map((user) => user.id),
-      });
+    const qb = this.userRepository.createQueryBuilder('user').where('user.id IN (:...ids)', {
+      ids: followingUsers.map((user) => user.id),
+    });
 
     return paginateQuery(qb, page, limit);
   }
@@ -96,18 +90,18 @@ export class FollowService {
 
     const currentUser = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ["followers"],
+      relations: ['followers'],
     });
 
     if (!currentUser.followers || !currentUser.followers.length) {
-      throw new NotFoundException("User does not have any followers.");
+      throw new NotFoundException('User does not have any followers.');
     }
 
     const followers = currentUser.followers;
 
     const qb = this.userRepository
-      .createQueryBuilder("user")
-      .where("user.id IN (:...ids)", { ids: followers.map((user) => user.id) });
+      .createQueryBuilder('user')
+      .where('user.id IN (:...ids)', { ids: followers.map((user) => user.id) });
 
     return paginateQuery(qb, page, limit);
   }
@@ -117,10 +111,10 @@ export class FollowService {
 
     const currentUser = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ["followers"],
+      relations: ['followers'],
     });
 
-    const startDate = dayjs().startOf("month").toDate();
+    const startDate = dayjs().startOf('month').toDate();
 
     const newFollowers = currentUser.followers.filter((follower) => {
       return dayjs(follower.created_at).isAfter(startDate);
@@ -129,19 +123,19 @@ export class FollowService {
     const newFollowerIds = newFollowers.map((follower) => follower.id);
 
     const qb = this.userRepository
-      .createQueryBuilder("user")
-      .where("user.id IN (:...ids)", { ids: newFollowerIds });
+      .createQueryBuilder('user')
+      .where('user.id IN (:...ids)', { ids: newFollowerIds });
 
     return paginateQuery(qb, page, limit);
   }
 
   async getTopFollowedUsers() {
     const usersWithFollowersCount = await this.userRepository
-      .createQueryBuilder("user")
-      .addSelect("COUNT(user_follow.follower_id)", "followersCount")
-      .leftJoin("user.followers", "user_follow")
-      .groupBy("user.id")
-      .orderBy("followersCount", "DESC")
+      .createQueryBuilder('user')
+      .addSelect('COUNT(user_follow.follower_id)', 'followersCount')
+      .leftJoin('user.followers', 'user_follow')
+      .groupBy('user.id')
+      .orderBy('followersCount', 'DESC')
       .limit(10)
       .getMany();
 

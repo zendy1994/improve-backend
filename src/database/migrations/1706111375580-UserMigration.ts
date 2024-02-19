@@ -1,12 +1,6 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableForeignKey,
-  TableIndex,
-} from "typeorm";
-import { TableNames } from "../../utils/constants/table-names.constant";
-import { UserGender } from "../../common/enums/user.enum";
+import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } from 'typeorm';
+import { TableNames } from '../../utils/constants/table-names.constant';
+import { UserGender } from '../../common/enums/user.enum';
 
 export class UserMigration1706111375580 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -15,71 +9,71 @@ export class UserMigration1706111375580 implements MigrationInterface {
         name: TableNames.USER,
         columns: [
           {
-            name: "id",
-            type: "uuid",
+            name: 'id',
+            type: 'uuid',
             isPrimary: true,
-            generationStrategy: "uuid",
+            generationStrategy: 'uuid',
             default: `uuid_generate_v4()`,
           },
           {
-            name: "email",
-            type: "varchar",
+            name: 'email',
+            type: 'varchar',
             isUnique: true,
           },
           {
-            name: "username",
-            type: "varchar",
+            name: 'username',
+            type: 'varchar',
             isUnique: true,
           },
           {
-            name: "password",
-            type: "varchar",
+            name: 'password',
+            type: 'varchar',
           },
           {
-            name: "first_name",
-            type: "varchar",
+            name: 'first_name',
+            type: 'varchar',
           },
           {
-            name: "last_name",
-            type: "varchar",
+            name: 'last_name',
+            type: 'varchar',
           },
           {
-            name: "dob",
-            type: "timestamptz",
+            name: 'dob',
+            type: 'timestamptz',
             isNullable: true,
           },
           {
-            name: "gender",
-            type: "enum",
+            name: 'gender',
+            type: 'enum',
             enum: [UserGender.MALE, UserGender.FEMALE, UserGender.OTHER],
-            enumName: "user_gender_enum",
+            enumName: 'user_gender_enum',
             isNullable: true,
           },
           {
-            name: "email_verified",
-            type: "boolean",
+            name: 'email_verified',
+            type: 'boolean',
             default: false,
           },
           {
-            name: "blacklisted_tokens",
-            type: "varchar",
+            name: 'blacklisted_tokens',
+            type: 'varchar',
             isArray: true,
             isNullable: true,
           },
           {
-            name: "avatar_id",
-            type: "uuid",
+            name: 'avatar_id',
+            type: 'uuid',
             isNullable: true,
           },
           {
-            name: "created_at",
-            type: "timestamptz",
-            default: "now()",
+            name: 'created_at',
+            type: 'timestamptz',
+            default: 'now()',
           },
           {
-            name: "updated_at",
-            type: "timestamptz",
-            default: "now()",
+            name: 'updated_at',
+            type: 'timestamptz',
+            default: 'now()',
           },
         ],
       }),
@@ -89,26 +83,26 @@ export class UserMigration1706111375580 implements MigrationInterface {
     await queryRunner.createIndex(
       TableNames.USER,
       new TableIndex({
-        name: "email_idx",
-        columnNames: ["email"],
+        name: 'email_idx',
+        columnNames: ['email'],
       })
     );
 
     await queryRunner.createIndex(
       TableNames.USER,
       new TableIndex({
-        name: "username_idx",
-        columnNames: ["username"],
+        name: 'username_idx',
+        columnNames: ['username'],
       })
     );
 
     await queryRunner.createForeignKey(
       TableNames.USER,
       new TableForeignKey({
-        columnNames: ["avatar_id"],
-        referencedColumnNames: ["id"],
+        columnNames: ['avatar_id'],
+        referencedColumnNames: ['id'],
         referencedTableName: TableNames.FILE,
-        onDelete: "CASCADE",
+        onDelete: 'CASCADE',
       })
     );
   }
@@ -116,12 +110,12 @@ export class UserMigration1706111375580 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable(TableNames.USER);
     const avatarForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf("avatar_id") !== -1
+      (fk) => fk.columnNames.indexOf('avatar_id') !== -1
     );
 
     await queryRunner.dropForeignKeys(TableNames.USER, [avatarForeignKey]);
-    await queryRunner.dropIndex(TableNames.USER, "email_idx");
-    await queryRunner.dropIndex(TableNames.USER, "username_idx");
+    await queryRunner.dropIndex(TableNames.USER, 'email_idx');
+    await queryRunner.dropIndex(TableNames.USER, 'username_idx');
     await queryRunner.dropTable(TableNames.USER);
   }
 }

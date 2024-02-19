@@ -1,11 +1,6 @@
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from "@nestjs/common";
-import { instanceToPlain } from "class-transformer";
-import { map } from "rxjs/operators";
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { instanceToPlain } from 'class-transformer';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TransformInterceptor implements NestInterceptor {
@@ -13,7 +8,7 @@ export class TransformInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => ({
         statusCode: context?.switchToHttp()?.getResponse()?.statusCode,
-        message: data?.message ?? "success",
+        message: data?.message ?? 'success',
         data: instanceToPlain(data),
       }))
     );
