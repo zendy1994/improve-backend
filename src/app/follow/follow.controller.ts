@@ -33,7 +33,10 @@ export class FollowController {
   }
 
   @Delete('/:userId')
-  unfollowUser(@GetUser() user: User, @Param('userId') userIdToUnfollow: string) {
+  unfollowUser(
+    @GetUser() user: User,
+    @Param('userId') userIdToUnfollow: string,
+  ) {
     return this.followService.unfollowUser(user, userIdToUnfollow);
   }
 
@@ -41,7 +44,7 @@ export class FollowController {
   async getFollowingUsers(
     @GetUser() user: User,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
-    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit,
   ) {
     return this.followService.getFollowingUsers(user, page, limit);
   }
@@ -50,7 +53,7 @@ export class FollowController {
   async getFollowers(
     @GetUser() user: User,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
-    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit,
   ) {
     return this.followService.getFollowers(user, page, limit);
   }
@@ -59,7 +62,7 @@ export class FollowController {
   async getNewFollowersCurrentMonth(
     @GetUser() user: User,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
-    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit,
   ) {
     return this.followService.getNewFollowers(user, page, limit);
   }

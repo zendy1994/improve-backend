@@ -1,5 +1,11 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 import { TableNames } from '../../utils/constants/table-names.constant';
+import { schemas } from './constants/schemas.constant';
 
 export class UserFollowMigration1706692679617 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -7,13 +13,9 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
       new Table({
         name: TableNames.USER_FOLLOW,
         columns: [
-          {
-            name: 'id',
-            type: 'uuid',
-            isPrimary: true,
-            generationStrategy: 'uuid',
-            default: `uuid_generate_v4()`,
-          },
+          schemas.id,
+          schemas.createdAt,
+          schemas.updatedAt,
           {
             name: 'follower_id',
             type: 'uuid',
@@ -22,19 +24,9 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
             name: 'following_id',
             type: 'uuid',
           },
-          {
-            name: 'created_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
         ],
       }),
-      true
+      true,
     );
 
     await queryRunner.createForeignKey(
@@ -44,7 +36,7 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
         referencedColumnNames: ['id'],
         referencedTableName: TableNames.USER,
         onDelete: 'CASCADE',
-      })
+      }),
     );
 
     await queryRunner.createForeignKey(
@@ -54,17 +46,17 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
         referencedColumnNames: ['id'],
         referencedTableName: TableNames.USER,
         onDelete: 'CASCADE',
-      })
+      }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable(TableNames.USER_FOLLOW);
     const followingForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('follower_id') !== -1
+      (fk) => fk.columnNames.indexOf('follower_id') !== -1,
     );
     const followerForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('following_id') !== -1
+      (fk) => fk.columnNames.indexOf('following_id') !== -1,
     );
 
     await queryRunner.dropForeignKeys(TableNames.USER_FOLLOW, [

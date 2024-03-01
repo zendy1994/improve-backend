@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableNames } from '../../utils/constants/table-names.constant';
+import { schemas } from './constants/schemas.constant';
 
 export class OtpMigration1706692517036 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -7,13 +8,9 @@ export class OtpMigration1706692517036 implements MigrationInterface {
       new Table({
         name: TableNames.OTP,
         columns: [
-          {
-            name: 'id',
-            type: 'uuid',
-            isPrimary: true,
-            generationStrategy: 'uuid',
-            default: 'uuid_generate_v4()',
-          },
+          schemas.id,
+          schemas.createdAt,
+          schemas.updatedAt,
           {
             name: 'email',
             type: 'varchar',
@@ -28,19 +25,9 @@ export class OtpMigration1706692517036 implements MigrationInterface {
             type: 'timestamptz',
             default: "CURRENT_TIMESTAMP + INTERVAL '5 minutes'",
           },
-          {
-            name: 'created_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
         ],
       }),
-      true
+      true,
     );
   }
 

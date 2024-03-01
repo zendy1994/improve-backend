@@ -1,19 +1,22 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 import { TableNames } from '../../utils/constants/table-names.constant';
+import { schemas } from './constants/schemas.constant';
 
-export class BacklistedTokenMigration1706111376600 implements MigrationInterface {
+export class BacklistedTokenMigration1706111376600
+  implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
         name: TableNames.BLACKLISTED_TOKEN,
         columns: [
-          {
-            name: 'id',
-            type: 'uuid',
-            isPrimary: true,
-            generationStrategy: 'uuid',
-            default: `uuid_generate_v4()`,
-          },
+          schemas.id,
+          schemas.createdAt,
+          schemas.updatedAt,
           {
             name: 'token',
             type: 'varchar',
@@ -22,19 +25,9 @@ export class BacklistedTokenMigration1706111376600 implements MigrationInterface
             name: 'user_id',
             type: 'uuid',
           },
-          {
-            name: 'created_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
         ],
       }),
-      true
+      true,
     );
 
     await queryRunner.createForeignKey(
@@ -44,17 +37,19 @@ export class BacklistedTokenMigration1706111376600 implements MigrationInterface
         referencedColumnNames: ['id'],
         referencedTableName: TableNames.USER,
         onDelete: 'CASCADE',
-      })
+      }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable(TableNames.BLACKLISTED_TOKEN);
     const userIdForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('user_id') !== -1
+      (fk) => fk.columnNames.indexOf('user_id') !== -1,
     );
 
-    await queryRunner.dropForeignKeys(TableNames.BLACKLISTED_TOKEN, [userIdForeignKey]);
+    await queryRunner.dropForeignKeys(TableNames.BLACKLISTED_TOKEN, [
+      userIdForeignKey,
+    ]);
     await queryRunner.dropTable(TableNames.BLACKLISTED_TOKEN);
   }
 }

@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableNames } from '../../utils/constants/table-names.constant';
+import { schemas } from './constants/schemas.constant';
 
 export class FileMigration1706110061920 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -7,13 +8,9 @@ export class FileMigration1706110061920 implements MigrationInterface {
       new Table({
         name: TableNames.FILE,
         columns: [
-          {
-            name: 'id',
-            type: 'uuid',
-            isPrimary: true,
-            generationStrategy: 'uuid',
-            default: 'uuid_generate_v4()',
-          },
+          schemas.id,
+          schemas.createdAt,
+          schemas.updatedAt,
           {
             name: 'url',
             type: 'text',
@@ -34,19 +31,9 @@ export class FileMigration1706110061920 implements MigrationInterface {
             name: 'file_name',
             type: 'varchar',
           },
-          {
-            name: 'created_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
         ],
       }),
-      true
+      true,
     );
   }
 

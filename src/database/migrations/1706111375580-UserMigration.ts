@@ -1,6 +1,13 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+  TableIndex,
+} from 'typeorm';
 import { TableNames } from '../../utils/constants/table-names.constant';
 import { UserGender } from '../../common/enums/user.enum';
+import { schemas } from './constants/schemas.constant';
 
 export class UserMigration1706111375580 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -8,13 +15,9 @@ export class UserMigration1706111375580 implements MigrationInterface {
       new Table({
         name: TableNames.USER,
         columns: [
-          {
-            name: 'id',
-            type: 'uuid',
-            isPrimary: true,
-            generationStrategy: 'uuid',
-            default: `uuid_generate_v4()`,
-          },
+          schemas.id,
+          schemas.createdAt,
+          schemas.updatedAt,
           {
             name: 'email',
             type: 'varchar',
@@ -65,19 +68,9 @@ export class UserMigration1706111375580 implements MigrationInterface {
             type: 'uuid',
             isNullable: true,
           },
-          {
-            name: 'created_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamptz',
-            default: 'now()',
-          },
         ],
       }),
-      true
+      true,
     );
 
     await queryRunner.createIndex(
@@ -85,7 +78,7 @@ export class UserMigration1706111375580 implements MigrationInterface {
       new TableIndex({
         name: 'email_idx',
         columnNames: ['email'],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
@@ -93,7 +86,7 @@ export class UserMigration1706111375580 implements MigrationInterface {
       new TableIndex({
         name: 'username_idx',
         columnNames: ['username'],
-      })
+      }),
     );
 
     await queryRunner.createForeignKey(
@@ -103,14 +96,14 @@ export class UserMigration1706111375580 implements MigrationInterface {
         referencedColumnNames: ['id'],
         referencedTableName: TableNames.FILE,
         onDelete: 'CASCADE',
-      })
+      }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable(TableNames.USER);
     const avatarForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('avatar_id') !== -1
+      (fk) => fk.columnNames.indexOf('avatar_id') !== -1,
     );
 
     await queryRunner.dropForeignKeys(TableNames.USER, [avatarForeignKey]);
