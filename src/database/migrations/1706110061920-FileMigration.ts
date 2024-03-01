@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableNames } from '../../utils/constants/table-names.constant';
-import { schemas } from './constants/schemas.constant';
+import { schemas } from '../constants/schemas.constant';
 
 export class FileMigration1706110061920 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

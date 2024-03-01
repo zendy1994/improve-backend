@@ -31,16 +31,16 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('avatar'),
-    new PublicFileValidatorInterceptor(
-      [/^image\/(jpg|jpeg|png|gif|webp)$/i],
-      'Only JPG, JPEG, PNG, GIF and WEBP file are allowed.',
-      false
-    )
+    new PublicFileValidatorInterceptor({
+      allowedFileTypes: [/^image\/(jpg|jpeg|png|gif|webp)$/i],
+      errorMessage: 'Only JPG, JPEG, PNG, GIF and WEBP file are allowed.',
+      isFileRequired: false,
+    }),
   )
   async addAvatar(
     @GetUser() user: User,
     @UploadedFile()
-    avatar: Express.Multer.File
+    avatar: Express.Multer.File,
   ) {
     const { id: userId } = user;
 
@@ -73,7 +73,7 @@ export class UserController {
   getUserList(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit,
-    @Query() query: FilterUserListDto
+    @Query() query: FilterUserListDto,
   ) {
     return this.userService.getUserList(page, limit, query);
   }

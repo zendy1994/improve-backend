@@ -28,16 +28,16 @@ export class AuthController {
   @Post('/sign-up')
   @UseInterceptors(
     FileInterceptor('avatar'),
-    new PublicFileValidatorInterceptor(
-      [/^image\/(?:jpg|jpeg|png|webp|gif|bmp|svg\+xml)$/i],
-      'Only images are allowed',
-      false
-    )
+    new PublicFileValidatorInterceptor({
+      allowedFileTypes: [/^image\/(jpg|jpeg|png|gif|webp)$/i],
+      errorMessage: 'Only JPG, JPEG, PNG, GIF and WEBP file are allowed.',
+      isFileRequired: false,
+    }),
   )
   signUp(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile()
-    avatar: Express.Multer.File
+    avatar: Express.Multer.File,
   ) {
     return this.authService.signUp(createUserDto, avatar);
   }

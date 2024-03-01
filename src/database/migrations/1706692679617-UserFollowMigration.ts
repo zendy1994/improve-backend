@@ -4,8 +4,9 @@ import {
   Table,
   TableForeignKey,
 } from 'typeorm';
+import { findForeignKey } from '../helpers/find-foreign-key.helper';
 import { TableNames } from '../../utils/constants/table-names.constant';
-import { schemas } from './constants/schemas.constant';
+import { schemas } from '../constants/schemas.constant';
 
 export class UserFollowMigration1706692679617 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -51,17 +52,21 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable(TableNames.USER_FOLLOW);
-    const followingForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('follower_id') !== -1,
-    );
-    const followerForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('following_id') !== -1,
-    );
+    const followerForeignKey = await findForeignKey({
+      queryRunner,
+      tableName: TableNames.USER_FOLLOW,
+      key: 'follower_id',
+    });
+
+    const followingForeignKey = await findForeignKey({
+      queryRunner,
+      tableName: TableNames.USER_FOLLOW,
+      key: 'following_id',
+    });
 
     await queryRunner.dropForeignKeys(TableNames.USER_FOLLOW, [
-      followingForeignKey,
       followerForeignKey,
+      followingForeignKey,
     ]);
     await queryRunner.dropTable(TableNames.USER_FOLLOW);
   }
