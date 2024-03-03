@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateFollowDto } from './dto/create-follow.dto';
 import { UpdateFollowDto } from './dto/update-follow.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,14 +18,14 @@ export class FollowService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
 
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   async followUser(user: User, createFollowDto: CreateFollowDto) {
     const { id: userId } = user;
-    const { follow_user_id } = createFollowDto;
+    const { followUserId } = createFollowDto;
 
-    const following = await this.userService.findUserById(follow_user_id);
+    const following = await this.userService.findUserById(followUserId);
 
     if (!following) {
       throw new NotFoundException('User to follow not found');
@@ -33,7 +37,7 @@ export class FollowService {
     });
 
     const alreadyFollowing = currentUser.following.some(
-      (followedUser) => followedUser.id === following.id
+      (followedUser) => followedUser.id === following.id,
     );
 
     if (alreadyFollowing) {
@@ -56,7 +60,7 @@ export class FollowService {
     });
 
     currentUser.following = currentUser.following.filter(
-      (followedUser) => followedUser.id !== userIdToUnfollow
+      (followedUser) => followedUser.id !== userIdToUnfollow,
     );
 
     await this.userRepository.save(currentUser);
@@ -78,9 +82,11 @@ export class FollowService {
 
     const followingUsers = currentUser.following;
 
-    const qb = this.userRepository.createQueryBuilder('user').where('user.id IN (:...ids)', {
-      ids: followingUsers.map((user) => user.id),
-    });
+    const qb = this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id IN (:...ids)', {
+        ids: followingUsers.map((user) => user.id),
+      });
 
     return paginateQuery(qb, page, limit);
   }

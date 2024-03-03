@@ -4,7 +4,11 @@ import { UpdateUserDto } from '@/app/user/dto/update-user.dto';
 import { User } from '@/app/user/entities/user.entity';
 import { paginateQuery } from '@/utils/helpers/pagination-qb.helper';
 import { ValidatorConstants } from '@/utils/constants/validators.constant';
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { In, Repository } from 'typeorm';
@@ -15,10 +19,13 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
 
-    private fileService: FileService
+    private fileService: FileService,
   ) {}
 
-  async isEmailOrUsernameTaken(email: string, username: string): Promise<boolean> {
+  async isEmailOrUsernameTaken(
+    email: string,
+    username: string,
+  ): Promise<boolean> {
     const existingUser = await this.userRepository
       .createQueryBuilder('user')
       .where('user.email = :email OR user.username = :username', {
@@ -95,7 +102,7 @@ export class UserService {
   }
 
   async getAllUser(query: FilterUserListDto): Promise<User[]> {
-    const { username, email, order_by } = query;
+    const { username, email, orderBy } = query;
 
     const qb = this.userRepository
       .createQueryBuilder('user')
@@ -113,15 +120,19 @@ export class UserService {
       });
     }
 
-    if (order_by) {
-      qb.orderBy('user.created_at', order_by);
+    if (orderBy) {
+      qb.orderBy('user.created_at', orderBy);
     }
 
     return qb.getMany();
   }
 
-  async getUserList(page: number, limit: number, query: FilterUserListDto): Promise<any> {
-    const { username, email, order_by } = query;
+  async getUserList(
+    page: number,
+    limit: number,
+    query: FilterUserListDto,
+  ): Promise<any> {
+    const { username, email, orderBy } = query;
 
     const qb = this.userRepository
       .createQueryBuilder('user')
@@ -139,8 +150,8 @@ export class UserService {
       });
     }
 
-    if (order_by) {
-      qb.orderBy('user.created_at', order_by);
+    if (orderBy) {
+      qb.orderBy('user.created_at', orderBy);
     }
 
     return paginateQuery(qb, page, limit);

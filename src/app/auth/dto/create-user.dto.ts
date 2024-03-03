@@ -1,5 +1,12 @@
 import { UserGender } from '@/common/enums/user.enum';
-import { IsDateString, IsString, MaxLength, MinLength, IsEnum, IsOptional } from 'class-validator';
+import {
+  IsDateString,
+  IsString,
+  MaxLength,
+  MinLength,
+  IsEnum,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -13,10 +20,10 @@ export class CreateUserDto {
   password: string;
 
   @IsString()
-  first_name: string;
+  firstName: string;
 
   @IsString()
-  last_name: string;
+  lastName: string;
 
   @IsOptional()
   @IsDateString()

@@ -28,7 +28,7 @@ export class AuthService {
 
     private jwtService: JwtService,
     private userService: UserService,
-    private otpService: OtpService
+    private otpService: OtpService,
   ) {}
 
   async blacklistToken(userId: string, token: string): Promise<void> {
@@ -51,8 +51,14 @@ export class AuthService {
     return !!blacklistedToken;
   }
 
-  private async verifyPassword(plainTextPassword: string, hashedPassword: string) {
-    const isPasswordMatching = await bcrypt.compare(plainTextPassword, hashedPassword);
+  private async verifyPassword(
+    plainTextPassword: string,
+    hashedPassword: string,
+  ) {
+    const isPasswordMatching = await bcrypt.compare(
+      plainTextPassword,
+      hashedPassword,
+    );
 
     if (!isPasswordMatching) {
       throw new BadRequestException('Wrong credentials provided');
@@ -65,7 +71,10 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const isTaken = await this.userService.isEmailOrUsernameTaken(email, username);
+    const isTaken = await this.userService.isEmailOrUsernameTaken(
+      email,
+      username,
+    );
 
     if (isTaken) {
       throw new ConflictException('Email or username already exists');
@@ -145,7 +154,7 @@ export class AuthService {
   }
 
   async changePassword(changePasswordDto: ChangePasswordDto) {
-    const { email, new_password, code } = changePasswordDto;
+    const { email, newPassword, code } = changePasswordDto;
 
     const user: User = await this.userService.findUserByIdentifier(email);
 
@@ -159,7 +168,7 @@ export class AuthService {
     });
 
     const salt = await bcrypt.genSalt();
-    const hashedNewPassword = await bcrypt.hash(new_password, salt);
+    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
 
     await this.userRepository.save({
       ...user,

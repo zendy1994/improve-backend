@@ -11,5 +11,5 @@ export class FilterUserListDto {
 
   @IsOptional()
   @IsString()
-  order_by: 'ASC' | 'DESC';
+  orderBy: 'ASC' | 'DESC';
 }
