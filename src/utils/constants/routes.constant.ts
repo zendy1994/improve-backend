@@ -1,14 +1,15 @@
 export const Routes = {
-  file: {
+  FILE: {
     prefix: 'file',
     upload: '/upload',
     uploadMultiple: '/upload/multiple',
   },
-  otp: {
+  OTP: {
     prefix: 'otp',
-    verification: '/verification',
+    send: '/send',
+    verify: '/verify',
   },
-  auth: {
+  AUTH: {
     prefix: 'auth',
     signUp: '/sign-up',
     signIn: '/sign-in',
@@ -16,13 +17,13 @@ export const Routes = {
     emailVerification: '/email-verification',
     changePassword: '/change-password',
   },
-  user: {
+  USER: {
     prefix: 'user',
     getOne: '/:userId',
     avatar: '/avatar',
     list: '/list',
   },
-  follow: {
+  FOLLOW: {
     prefix: 'follow',
     getOne: '/:userId',
     followings: '/followings',

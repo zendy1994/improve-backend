@@ -4,6 +4,7 @@ import { FollowService } from '@/app/follow/follow.service';
 import { User } from '@/app/user/entities/user.entity';
 import { GetUser } from '@/decorators/get-user.decorator';
 import { SentryInterceptor } from '@/interceptors/sentry.interceptor';
+import { ApiTagNames } from '@/utils/constants/api-tags.contant';
 import { Routes } from '@/utils/constants/routes.constant';
 import {
   Body,
@@ -20,9 +21,9 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Follow')
+@ApiTags(ApiTagNames.FOLLOW)
 @UseInterceptors(SentryInterceptor)
-@Controller(Routes.follow.prefix)
+@Controller(Routes.FOLLOW.prefix)
 @UseGuards(JwtAuthGuard)
 export class FollowController {
   constructor(private readonly followService: FollowService) {}
@@ -32,7 +33,7 @@ export class FollowController {
     return this.followService.followUser(user, createFollowDto);
   }
 
-  @Delete(Routes.follow.getOne)
+  @Delete(Routes.FOLLOW.getOne)
   unfollowUser(
     @GetUser() user: User,
     @Param('userId') userIdToUnfollow: string,
@@ -40,7 +41,7 @@ export class FollowController {
     return this.followService.unfollowUser(user, userIdToUnfollow);
   }
 
-  @Get(Routes.follow.followings)
+  @Get(Routes.FOLLOW.followings)
   async getFollowingUsers(
     @GetUser() user: User,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
@@ -49,7 +50,7 @@ export class FollowController {
     return this.followService.getFollowingUsers(user, page, limit);
   }
 
-  @Get(Routes.follow.followers)
+  @Get(Routes.FOLLOW.followers)
   async getFollowers(
     @GetUser() user: User,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
@@ -58,7 +59,7 @@ export class FollowController {
     return this.followService.getFollowers(user, page, limit);
   }
 
-  @Get(Routes.follow.newFollowers)
+  @Get(Routes.FOLLOW.newFollowers)
   async getNewFollowersCurrentMonth(
     @GetUser() user: User,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
@@ -67,7 +68,7 @@ export class FollowController {
     return this.followService.getNewFollowers(user, page, limit);
   }
 
-  @Get(Routes.follow.topFollowed)
+  @Get(Routes.FOLLOW.topFollowed)
   async getTopFollowedUsers() {
     return this.followService.getTopFollowedUsers();
   }

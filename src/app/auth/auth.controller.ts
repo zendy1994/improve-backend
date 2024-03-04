@@ -8,6 +8,7 @@ import { User } from '@/app/user/entities/user.entity';
 import { GetToken } from '@/decorators/get-token.decorator';
 import { GetUser } from '@/decorators/get-user.decorator';
 import { PublicFileValidatorInterceptor } from '@/interceptors/public-file-validator.interceptor';
+import { ApiTagNames } from '@/utils/constants/api-tags.contant';
 import { Routes } from '@/utils/constants/routes.constant';
 import {
   Body,
@@ -20,12 +21,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller(Routes.auth.prefix)
+@ApiTags(ApiTagNames.AUTH)
+@Controller(Routes.AUTH.prefix)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post(Routes.auth.signUp)
+  @Post(Routes.AUTH.signUp)
   @UseInterceptors(
     FileInterceptor('avatar'),
     new PublicFileValidatorInterceptor({
@@ -42,23 +45,23 @@ export class AuthController {
     return this.authService.signUp(createUserDto, avatar);
   }
 
-  @Post(Routes.auth.signIn)
+  @Post(Routes.AUTH.signIn)
   signIn(@Body() authCredentialsDto: AuthCredentialsDto) {
     return this.authService.signIn(authCredentialsDto);
   }
 
-  @Delete(Routes.auth.signOut)
+  @Delete(Routes.AUTH.signOut)
   @UseGuards(JwtAuthGuard)
   signOut(@GetUser() user: User, @GetToken() token: string) {
     return this.authService.signOut(user, token);
   }
 
-  @Patch(Routes.auth.emailVerification)
+  @Patch(Routes.AUTH.emailVerification)
   emailVerification(verifyOtpDto: VerifyOtpDto) {
     return this.authService.emailVerification(verifyOtpDto);
   }
 
-  @Post(Routes.auth.changePassword)
+  @Post(Routes.AUTH.changePassword)
   async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
     return this.authService.changePassword(changePasswordDto);
   }

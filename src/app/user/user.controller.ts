@@ -5,6 +5,7 @@ import { User } from '@/app/user/entities/user.entity';
 import { UserService } from '@/app/user/user.service';
 import { GetUser } from '@/decorators/get-user.decorator';
 import { PublicFileValidatorInterceptor } from '@/interceptors/public-file-validator.interceptor';
+import { ApiTagNames } from '@/utils/constants/api-tags.contant';
 import { Routes } from '@/utils/constants/routes.constant';
 import {
   Body,
@@ -22,12 +23,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller(Routes.user.prefix)
+@ApiTags(ApiTagNames.USER)
+@Controller(Routes.USER.prefix)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post(Routes.user.avatar)
+  @Post(Routes.USER.avatar)
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('avatar'),
@@ -47,7 +50,7 @@ export class UserController {
     return this.userService.addAvatar(userId, avatar);
   }
 
-  @Delete(Routes.user.avatar)
+  @Delete(Routes.USER.avatar)
   @UseGuards(JwtAuthGuard)
   async deleteAvatar(@GetUser() user: User) {
     const { id: userId } = user;
@@ -62,7 +65,7 @@ export class UserController {
     return this.userService.getUserDetailByUserId(userId);
   }
 
-  @Get(Routes.user.list)
+  @Get(Routes.USER.list)
   @UseGuards(JwtAuthGuard)
   getUserList(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
@@ -72,7 +75,7 @@ export class UserController {
     return this.userService.getUserList(page, limit, query);
   }
 
-  @Get(Routes.user.getOne)
+  @Get(Routes.USER.getOne)
   getUserById(@Param('userId') userId: string) {
     return this.userService.getUserDetailByUserId(userId);
   }

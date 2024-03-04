@@ -32,6 +32,7 @@ async function bootstrap() {
     .setTitle('Social Network API Document')
     .setDescription('Social Network API')
     .setVersion('1.0')
+    .addServer('http://localhost:8080', 'Local environment')
     .build();
 
   const document = SwaggerModule.createDocument(app, configSwagger);

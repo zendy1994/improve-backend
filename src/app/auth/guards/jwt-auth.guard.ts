@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContext } from '@nestjs/common';
 import { User } from '@/app/user/entities/user.entity';
-import { BlacklistedToken } from '@/app/user/entities/blacklisted_token.entity';
+import { BlacklistedToken } from '@/app/user/entities/blacklisted-token.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     @InjectRepository(BlacklistedToken)
-    private readonly blacklistedTokenRepository: Repository<BlacklistedToken>
+    private readonly blacklistedTokenRepository: Repository<BlacklistedToken>,
   ) {
     super();
   }
@@ -29,7 +29,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return user;
   }
 
-  private async isTokenBlacklisted(user: User, context: ExecutionContext): Promise<boolean> {
+  private async isTokenBlacklisted(
+    user: User,
+    context: ExecutionContext,
+  ): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.split(' ')[1];
 

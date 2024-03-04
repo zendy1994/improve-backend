@@ -16,7 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { BlacklistedToken } from '@/app/user/entities/blacklisted_token.entity';
+import { BlacklistedToken } from '@/app/user/entities/blacklisted-token.entity';
 
 @Injectable()
 export class AuthService {

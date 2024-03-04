@@ -1,5 +1,5 @@
 import { File } from '@/app/file/entities/file.entity';
-import { BlacklistedToken } from '@/app/user/entities/blacklisted_token.entity';
+import { BlacklistedToken } from '@/app/user/entities/blacklisted-token.entity';
 import { BaseEntity } from '@/common/entities/base.entity';
 import { TableNames } from '@/utils/constants/table-names.constant';
 import { UserGender } from '@/common/enums/user.enum';
@@ -55,7 +55,10 @@ export class User extends BaseEntity {
   @JoinColumn({ name: 'avatar_id' })
   avatar: File;
 
-  @OneToMany(() => BlacklistedToken, (blacklistedToken) => blacklistedToken.user)
+  @OneToMany(
+    () => BlacklistedToken,
+    (blacklistedToken) => blacklistedToken.user,
+  )
   blacklistedTokens: BlacklistedToken[];
 
   @ManyToMany(() => User, (user) => user.following)
