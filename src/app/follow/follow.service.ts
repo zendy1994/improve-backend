@@ -1,16 +1,15 @@
+import { CreateFollowDto } from '@/app/follow/dto/create-follow.dto';
+import { User } from '@/app/user/entities/user.entity';
+import { UserService } from '@/app/user/user.service';
+import { paginateQuery } from '@/utils/helpers/pagination-qb.helper';
 import {
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateFollowDto } from './dto/create-follow.dto';
-import { UpdateFollowDto } from './dto/update-follow.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@/app/user/entities/user.entity';
-import { UserService } from '../user/user.service';
-import { Repository } from 'typeorm';
 import dayjs from 'dayjs';
-import { paginateQuery } from '@/utils/helpers/pagination-qb.helper';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FollowService {

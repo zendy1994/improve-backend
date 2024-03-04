@@ -101,32 +101,6 @@ export class UserService {
     return this.getUserDetailByUserId(userId);
   }
 
-  async getAllUser(query: FilterUserListDto): Promise<User[]> {
-    const { username, email, orderBy } = query;
-
-    const qb = this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.avatar', 'avatar');
-
-    if (username) {
-      qb.andWhere('LOWER(user.username) LIKE LOWER(:username)', {
-        username: `%${username}%`,
-      });
-    }
-
-    if (email) {
-      qb.andWhere('LOWER(user.email) LIKE LOWER(:email)', {
-        email: `%${email}%`,
-      });
-    }
-
-    if (orderBy) {
-      qb.orderBy('user.created_at', orderBy);
-    }
-
-    return qb.getMany();
-  }
-
   async getUserList(
     page: number,
     limit: number,

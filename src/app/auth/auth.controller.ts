@@ -21,11 +21,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller(Routes.AUTH)
+@Controller(Routes.auth.prefix)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('/sign-up')
+  @Post(Routes.auth.signUp)
   @UseInterceptors(
     FileInterceptor('avatar'),
     new PublicFileValidatorInterceptor({
@@ -42,23 +42,23 @@ export class AuthController {
     return this.authService.signUp(createUserDto, avatar);
   }
 
-  @Post('/sign-in')
+  @Post(Routes.auth.signIn)
   signIn(@Body() authCredentialsDto: AuthCredentialsDto) {
     return this.authService.signIn(authCredentialsDto);
   }
 
-  @Delete('/sign-out')
+  @Delete(Routes.auth.signOut)
   @UseGuards(JwtAuthGuard)
   signOut(@GetUser() user: User, @GetToken() token: string) {
     return this.authService.signOut(user, token);
   }
 
-  @Patch('/email-verification')
+  @Patch(Routes.auth.emailVerification)
   emailVerification(verifyOtpDto: VerifyOtpDto) {
     return this.authService.emailVerification(verifyOtpDto);
   }
 
-  @Post('/change-password')
+  @Post(Routes.auth.changePassword)
   async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
     return this.authService.changePassword(changePasswordDto);
   }

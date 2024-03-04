@@ -14,21 +14,21 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('File')
-@Controller(Routes.FILE)
+@Controller(Routes.file.prefix)
 @UseGuards(JwtAuthGuard)
 export class FileController {
   constructor(private fileService: FileService) {}
 
-  @Post('/upload')
+  @Post(Routes.file.upload)
   @UseInterceptors(FileInterceptor('file'))
   uploadPublicFile(@UploadedFile() file: Express.Multer.File): Promise<File> {
     return this.fileService.uploadSingleFile(file);
   }
 
-  @Post('/upload/multiple')
+  @Post(Routes.file.uploadMultiple)
   @UseInterceptors(FilesInterceptor('files'))
   uploadMultiplePublicFile(
-    @UploadedFiles() files: Array<Express.Multer.File>
+    @UploadedFiles() files: Array<Express.Multer.File>,
   ): Promise<Array<File>> {
     return this.fileService.uploadMultipleFile(files);
   }

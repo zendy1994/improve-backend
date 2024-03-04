@@ -23,11 +23,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller(Routes.USER)
+@Controller(Routes.user.prefix)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/avatar')
+  @Post(Routes.user.avatar)
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('avatar'),
@@ -47,7 +47,7 @@ export class UserController {
     return this.userService.addAvatar(userId, avatar);
   }
 
-  @Delete('/avatar')
+  @Delete(Routes.user.avatar)
   @UseGuards(JwtAuthGuard)
   async deleteAvatar(@GetUser() user: User) {
     const { id: userId } = user;
@@ -62,13 +62,7 @@ export class UserController {
     return this.userService.getUserDetailByUserId(userId);
   }
 
-  @Get('/all')
-  @UseGuards(JwtAuthGuard)
-  getAllUser(@Query() query: FilterUserListDto) {
-    return this.userService.getAllUser(query);
-  }
-
-  @Get('/list')
+  @Get(Routes.user.list)
   @UseGuards(JwtAuthGuard)
   getUserList(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page,
@@ -78,7 +72,7 @@ export class UserController {
     return this.userService.getUserList(page, limit, query);
   }
 
-  @Get('/:userId')
+  @Get(Routes.user.getOne)
   getUserById(@Param('userId') userId: string) {
     return this.userService.getUserDetailByUserId(userId);
   }

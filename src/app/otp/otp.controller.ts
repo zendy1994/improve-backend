@@ -8,7 +8,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('OTP')
 @UseInterceptors(SentryInterceptor)
-@Controller(Routes.OTP)
+@Controller(Routes.otp.prefix)
 export class OtpController {
   constructor(private readonly otpService: OtpService) {}
 
@@ -17,7 +17,7 @@ export class OtpController {
     return this.otpService.sendOtpByEmail(sendOtpDto);
   }
 
-  @Post('/verification')
+  @Post(Routes.otp.verification)
   async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<boolean> {
     return this.otpService.verifyOtpByEmail(verifyOtpDto);
   }
