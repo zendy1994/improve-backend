@@ -6,9 +6,9 @@ import {
   TableIndex,
 } from 'typeorm';
 import { UserGender } from '../../common/enums/user.enum';
-import { findForeignKey } from '../helpers/find-foreign-key.helper';
 import { TableNames } from '../../utils/constants/table-names.constant';
 import { schemas } from '../constants/schemas.constant';
+import { dropForeignKeysByColumnNames } from '../helpers/drop-foreign-keys';
 
 export class UserMigration1706111375580 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -102,13 +102,9 @@ export class UserMigration1706111375580 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const avatarForeignKey = await findForeignKey({
-      queryRunner,
-      tableName: TableNames.USER,
-      key: 'avatar_id',
-    });
-
-    await queryRunner.dropForeignKeys(TableNames.USER, [avatarForeignKey]);
+    await dropForeignKeysByColumnNames(queryRunner, TableNames.USER, [
+      'avatar_id',
+    ]);
     await queryRunner.dropIndex(TableNames.USER, 'email_idx');
     await queryRunner.dropIndex(TableNames.USER, 'username_idx');
     await queryRunner.dropTable(TableNames.USER);

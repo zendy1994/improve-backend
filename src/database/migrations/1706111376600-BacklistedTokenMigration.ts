@@ -4,9 +4,9 @@ import {
   Table,
   TableForeignKey,
 } from 'typeorm';
-import { findForeignKey } from '../helpers/find-foreign-key.helper';
 import { TableNames } from '../../utils/constants/table-names.constant';
 import { schemas } from '../constants/schemas.constant';
+import { dropForeignKeysByColumnNames } from '../helpers/drop-foreign-keys';
 
 export class BacklistedTokenMigration1706111376600
   implements MigrationInterface {
@@ -43,15 +43,12 @@ export class BacklistedTokenMigration1706111376600
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const userIdForeignKey = await findForeignKey({
+    await dropForeignKeysByColumnNames(
       queryRunner,
-      tableName: TableNames.BLACKLISTED_TOKEN,
-      key: 'user_id',
-    });
+      TableNames.BLACKLISTED_TOKEN,
+      ['user_id'],
+    );
 
-    await queryRunner.dropForeignKeys(TableNames.BLACKLISTED_TOKEN, [
-      userIdForeignKey,
-    ]);
     await queryRunner.dropTable(TableNames.BLACKLISTED_TOKEN);
   }
 }

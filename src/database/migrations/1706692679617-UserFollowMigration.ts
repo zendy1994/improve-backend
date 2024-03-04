@@ -4,9 +4,9 @@ import {
   Table,
   TableForeignKey,
 } from 'typeorm';
-import { findForeignKey } from '../helpers/find-foreign-key.helper';
 import { TableNames } from '../../utils/constants/table-names.constant';
 import { schemas } from '../constants/schemas.constant';
+import { dropForeignKeysByColumnNames } from '../helpers/drop-foreign-keys';
 
 export class UserFollowMigration1706692679617 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -30,44 +30,32 @@ export class UserFollowMigration1706692679617 implements MigrationInterface {
       true,
     );
 
-    await queryRunner.createForeignKey(
-      TableNames.USER_FOLLOW,
+    const foreignKeys = [
       new TableForeignKey({
         columnNames: ['follower_id'],
         referencedColumnNames: ['id'],
         referencedTableName: TableNames.USER,
         onDelete: 'CASCADE',
       }),
-    );
-
-    await queryRunner.createForeignKey(
-      TableNames.USER_FOLLOW,
       new TableForeignKey({
         columnNames: ['following_id'],
         referencedColumnNames: ['id'],
         referencedTableName: TableNames.USER,
         onDelete: 'CASCADE',
       }),
-    );
+    ];
+
+    for (const foreignKey of foreignKeys) {
+      await queryRunner.createForeignKey(TableNames.USER_FOLLOW, foreignKey);
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const followerForeignKey = await findForeignKey({
-      queryRunner,
-      tableName: TableNames.USER_FOLLOW,
-      key: 'follower_id',
-    });
-
-    const followingForeignKey = await findForeignKey({
-      queryRunner,
-      tableName: TableNames.USER_FOLLOW,
-      key: 'following_id',
-    });
-
-    await queryRunner.dropForeignKeys(TableNames.USER_FOLLOW, [
-      followerForeignKey,
-      followingForeignKey,
+    await dropForeignKeysByColumnNames(queryRunner, TableNames.USER_FOLLOW, [
+      'follower_id',
+      'following_id',
     ]);
+
     await queryRunner.dropTable(TableNames.USER_FOLLOW);
   }
 }
